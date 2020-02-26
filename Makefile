@@ -53,5 +53,5 @@ async_streamer_server: asyncstreamer.pb.o asyncstreamer.grpc.pb.o AsyncStreamerS
 	$(PROTOC) -I $(PROTOS_PATH) --cpp_out=. $<
 
 clean:
-	rm -f *.o *.pb.cc *.pb.h async_server async_client
+	rm -f *.o *.pb.cc *.pb.h async_streamer_server async_streamer_client
 
