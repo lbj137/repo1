@@ -38,7 +38,7 @@ class AsyncStreamHandler : public AsyncStreamHandlerBase<AsyncStreamHandler>
 public:
     template<typename... Args> 
     AsyncStreamHandler(Args&&... t) : AsyncStreamHandlerBase<AsyncStreamHandler> 
-        (std::forward<Args>(t)...) {} \
+        (std::forward<Args>(t)...) {} 
     HandlerStatus SendResponse(void* opaque_handle) override 
     {
         HandlerStatus status = ACTIVE; 
