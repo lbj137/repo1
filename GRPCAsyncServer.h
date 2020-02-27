@@ -98,20 +98,15 @@ public:
      * @param port - port on which to listen
      * @param service- grpc service providing grpc api
      * @param handlers- service handlers that handle queries
-     * @param sleepValue- time to sleep in between polling for queries
      */
     GRPCAsyncServer(uint16_t port,
         const std::vector<std::shared_ptr<grpc::Service>>& services,
-        const std::vector<std::shared_ptr<AsyncServiceHandler>>& handlers,
-        bool use_local_host = true,
-        const timespec& sleep_time = {0, 100}) :
+        const std::vector<std::shared_ptr<AsyncServiceHandler>>& handlers):
         cq_(nullptr),
         services_(services),
         handlers_(handlers),
         server_(nullptr),
-        port_(port),
-        use_local_host_(use_local_host),
-        sleep_time_(sleep_time) {}
+        port_(port) {}
 
     void Run(const std::atomic_bool& should_exit);
 
@@ -158,8 +153,6 @@ private:
     std::vector<std::shared_ptr<AsyncServiceHandler>> handlers_;
     std::unique_ptr<grpc::Server> server_;
     uint16_t port_;
-    bool use_local_host_;
-    timespec sleep_time_;
 };
 
 } // end ns grpc

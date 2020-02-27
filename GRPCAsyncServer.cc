@@ -55,8 +55,8 @@ GRPCAsyncServer::Run(const std::atomic_bool& should_exit)
 {
     ServerBuilder builder;
     const auto server_credentials = grpc::InsecureServerCredentials();
-    const std::string server_address = (use_local_host_ ? std::string("127.0.0.1:") :
-        std::string("0.0.0.0:")) + std::to_string(port_);
+    const std::string server_address =  std::string("0.0.0.0:") +
+        std::to_string(port_);
     builder.AddListeningPort(server_address, server_credentials);
     // Register "service_" as the instance through which we'll communicate with
     // clients. In this case it corresponds to an *asynchronous* service.
@@ -114,17 +114,11 @@ GRPCAsyncServer::HandleRpcs(const std::atomic_bool& should_exit)
     while (!should_exit) {
         void* tag = nullptr;  // uniquely identifies a request.
         bool ok = false;
-        gpr_timespec deadline;
-        deadline.clock_type = GPR_CLOCK_MONOTONIC;
-        deadline.tv_sec = 0;
-        deadline.tv_nsec = 0;
+        gpr_timespec deadline = gpr_time_add(gpr_now(GPR_CLOCK_REALTIME),
+           gpr_time_from_micros(100, GPR_TIMESPAN));
         CompletionQueue::NextStatus stat = cq_->AsyncNext(&tag, &ok, deadline);
         if (stat == CompletionQueue::GOT_EVENT && ok) {
             static_cast<CallData*>(tag)->Proceed();
-        } 
-        else  {
-            // yield some time to conserve cpu
-            nanosleep(&sleep_time_, NULL);
         }
     }
 }
